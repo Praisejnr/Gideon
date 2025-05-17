@@ -1,0 +1,22 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+:root{
+    --primary-cl: #162;
+    --light-cl: #fff;
+    --sm-pad: 10px 20px;
+    --bg-pad: 40px 80px;
+}
+
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--sm-pad);
+}
