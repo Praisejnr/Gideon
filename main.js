@@ -1,9 +1,3 @@
-// Global variables
-let isRunning = false;
-
-// HTML elements
-const voiceCon = document.querySelector(".voice-box");
-
 // Get voice recognition
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -13,52 +7,38 @@ recognition.lang = "en-US";
 recognition.interimResults = false;
 recognition.continuous = true;
 
-// Voice container click event
-voiceCon.addEventListener("click", () => {
-  isRunning = !isRunning;
+// Global variables
+let isRunning = false;
 
-  if (isRunning) {
-    voiceCon.style.animation = "voicing 2s infinite";
+// HTML elements
+const voiceCon = document.querySelector(".voice-box");
+
+// Voice functions
+voiceCon.addEventListener("click", () => {
+  if (!isRunning) {
     recognition.start();
+    voiceCon.style.animation = "voicing 2s infinite";
   } else {
-    voiceCon.style.animation = "none";
     recognition.stop();
+    voiceCon.style.animation = "none";
   }
+  isRunning = !isRunning;
 });
 
-// Restart recognition if still running
-recognition.onend = () => {
-  if (isRunning) {
-    recognition.start();
-  }
-};
-
-// Handle result
+// Voice input
 recognition.onresult = (event) => {
   const transcript = event.results[0][0].transcript.toLowerCase();
-  console.log("Heard:", transcript); // 👈 helpful debug
   respond(transcript);
 };
 
 function respond(message) {
   let reply = "";
-
-  if (
-    message.includes("gideon") ||
-    message.includes("hello") ||
-    message.includes("hi")
-  ) {
-    reply = "Hello, good day sir. How may I help you today?";
-  } else if (message.includes("bye")) {
-    reply = "Bye, sir.";
-    isRunning = false; // 👈 stop everything after goodbye
-    voiceCon.style.animation = "none";
+  if (message.includes("gideon") || message.includes("hi")) {
+    reply = "Hello sir, how may I assist you today?";
   } else {
-    reply =
-      "Sorry, I could not understand what you said. Can you please try again?";
+    reply = "Sorry, I don't understand what you said. Can you try again?";
   }
 
-  // Speak response
   const utter = new SpeechSynthesisUtterance(reply);
   utter.onend = () => {
     if (isRunning) {
@@ -66,5 +46,5 @@ function respond(message) {
     }
   };
 
-  speechSynthesis.speak(utter);
+  speechSynthesis.speak(utter); // <-- corrected here
 }
