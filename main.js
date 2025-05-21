@@ -48,3 +48,13 @@ function respond(message) {
 
   speechSynthesis.speak(utter); // <-- corrected here
 }
+
+fetch('http://localhost:5000/ping')
+  .then(response => response.json())
+  .then(data => {
+    console.log('Server says:', data.message);
+    alert(data.message); // Optional: show it in an alert
+  })
+  .catch(error => {
+    console.error('Error connecting to backend:', error);
+  });
