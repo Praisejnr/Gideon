@@ -42,7 +42,6 @@ function sendToServer(transcript) {
   )
   .then((response) => response.json())
   .then((data) => {
-    alert(data.message);
     const utter = new SpeechSynthesisUtterance(data.message);
   utter.onend = () => {
     if (isRunning) {
