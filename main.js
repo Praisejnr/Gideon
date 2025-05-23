@@ -28,18 +28,22 @@ voiceCon.addEventListener("click", () => {
 // Voice input
 recognition.onresult = (event) => {
   const transcript = event.results[0][0].transcript.toLowerCase();
-  respond(transcript);
+  sendToServer(transcript);
 };
 
-function respond(message) {
-  let reply = "";
-  if (message.includes("gideon") || message.includes("hi")) {
-    reply = "Hello sir, how may I assist you today?";
-  } else {
-    reply = "Sorry, I don't understand what you said. Can you try again?";
+function sendToServer(transcript) {
+  fetch("http://localhost:5000/receive", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({transcript})
   }
-
-  const utter = new SpeechSynthesisUtterance(reply);
+  )
+  .then((response) => response.json())
+  .then((data) => {
+    alert(data.message);
+    const utter = new SpeechSynthesisUtterance(data.message);
   utter.onend = () => {
     if (isRunning) {
       recognition.start();
@@ -47,14 +51,9 @@ function respond(message) {
   };
 
   speechSynthesis.speak(utter); // <-- corrected here
+  })
+  .catch((error) => {
+    console.error("Error:", error)
+  })
 }
 
-fetch('http://localhost:5000/ping')
-  .then(response => response.json())
-  .then(data => {
-    console.log('Server says:', data.message);
-    alert(data.message); // Optional: show it in an alert
-  })
-  .catch(error => {
-    console.error('Error connecting to backend:', error);
-  });
